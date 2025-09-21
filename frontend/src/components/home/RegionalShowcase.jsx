@@ -1,39 +1,70 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { MapPin } from 'lucide-react';
+import { destinationService, handleApiError } from '../../services/api';
 
 const RegionalShowcase = () => {
-  const regions = [
-    {
-      id: 1,
-      name: "Loire, Vendée, Brittany and Burgundy",
-      subtitle: "The beautiful heart of Central France",
-      image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      properties: 245
-    },
-    {
-      id: 2,
-      name: "Dordogne and South-West",
-      subtitle: "The much-loved South-West",
-      image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      properties: 189
-    },
-    {
-      id: 3,
-      name: "Occitanie (inc. Languedoc)",
-      subtitle: "The sun-drenched Mediterranean",
-      image: "https://images.unsplash.com/photo-1549068106-b024baf5062d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      properties: 312
-    },
-    {
-      id: 4,
-      name: "Provence, Côte d'Azur and Corsica",
-      subtitle: "Picturesque villages and the French Riviera",
-      image: "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      properties: 156
-    }
-  ];
+  const [regions, setRegions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      try {
+        setLoading(true);
+        const response = await destinationService.getDestinations();
+        setRegions(response.data);
+        setError(null);
+      } catch (err) {
+        const errorInfo = handleApiError(err);
+        setError(errorInfo.message);
+        console.error('Error fetching destinations:', errorInfo);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDestinations();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-light text-gray-800 mb-8">
+              Loading holiday destinations...
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-gray-200 h-48 rounded-t-lg"></div>
+                <div className="bg-white p-4 rounded-b-lg">
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 text-center">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+            <h3 className="text-red-800 font-semibold mb-2">Error Loading Destinations</h3>
+            <p className="text-red-600">{error}</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 bg-white">
@@ -56,11 +87,11 @@ const RegionalShowcase = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <h3 className="font-semibold text-lg mb-1 leading-tight">{region.name}</h3>
-                  <p className="text-sm opacity-90">{region.subtitle}</p>
+                  <p className="text-sm opacity-90">{region.description}</p>
                 </div>
                 <div className="absolute top-4 right-4">
                   <div className="bg-amber-400 text-black px-2 py-1 rounded-full text-xs font-semibold">
-                    {region.properties} homes
+                    {region.property_count} homes
                   </div>
                 </div>
               </div>
