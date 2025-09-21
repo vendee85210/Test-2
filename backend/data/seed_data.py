@@ -1,6 +1,10 @@
 """
 Seed data script to populate the database with initial data
 """
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from models.property import Property, PropertyLocation, PropertyFeatures
 from models.destination import Destination
 from models.blog import BlogPost
