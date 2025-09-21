@@ -1,15 +1,9 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
 from models.blog import BlogPost, BlogPostCreate
-from motor.motor_asyncio import AsyncIOMotorClient
-import os
+from database import db
 
 router = APIRouter()
-
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
 
 @router.get("/", response_model=List[BlogPost])
 async def get_blog_posts(
