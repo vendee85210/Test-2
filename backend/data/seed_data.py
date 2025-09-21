@@ -3,15 +3,20 @@ Seed data script to populate the database with initial data
 """
 import sys
 import os
+from pathlib import Path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from models.property import Property, PropertyLocation, PropertyFeatures
 from models.destination import Destination
 from models.blog import BlogPost
 from motor.motor_asyncio import AsyncIOMotorClient
-import os
 import asyncio
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables
+ROOT_DIR = Path(__file__).parent.parent
+load_dotenv(ROOT_DIR / '.env')
 
 async def seed_database():
     # MongoDB connection
