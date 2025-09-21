@@ -1,9 +1,73 @@
-import React from 'react';
-import { mockDestinations } from '../data/mockData';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '../components/ui/card';
 import { MapPin, Home } from 'lucide-react';
+import { destinationService, handleApiError } from '../services/api';
 
 const DestinationsPage = () => {
+  const [destinations, setDestinations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      try {
+        setLoading(true);
+        const response = await destinationService.getDestinations();
+        setDestinations(response.data);
+        setError(null);
+      } catch (err) {
+        const errorInfo = handleApiError(err);
+        setError(errorInfo.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDestinations();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-light text-gray-800 mb-4">
+              French Holiday Destinations
+            </h1>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Loading destinations...
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-gray-200 h-64 rounded-t-lg"></div>
+                <div className="bg-white p-6 rounded-b-lg">
+                  <div className="h-6 bg-gray-200 rounded mb-3"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen py-16 bg-gray-50">
+        <div className="container mx-auto px-4 text-center">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+            <h3 className="text-red-800 font-semibold mb-2">Error Loading Destinations</h3>
+            <p className="text-red-600">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen py-16 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -17,7 +81,7 @@ const DestinationsPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mockDestinations.map((destination) => (
+          {destinations.map((destination) => (
             <Card key={destination.id} className="group cursor-pointer overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
               <div className="relative overflow-hidden">
                 <img 
@@ -32,7 +96,7 @@ const DestinationsPage = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <Home className="h-4 w-4" />
-                      <span className="text-sm">{destination.properties} properties</span>
+                      <span className="text-sm">{destination.property_count} properties</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <MapPin className="h-4 w-4" />
