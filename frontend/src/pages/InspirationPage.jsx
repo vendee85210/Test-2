@@ -1,7 +1,7 @@
 import React from 'react';
 import { mockBlogPosts } from '../data/mockData';
-import { Card, CardContent } from '../ui/card';
-import { Button } from '../ui/button';
+import { Card, CardContent } from '../components/ui/card';
+import { Button } from '../components/ui/button';
 import { Calendar, User, Tag } from 'lucide-react';
 
 const InspirationPage = () => {
