@@ -1,6 +1,6 @@
 import React from 'react';
 import { mockDestinations } from '../data/mockData';
-import { Card, CardContent } from '../ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { MapPin, Home } from 'lucide-react';
 
 const DestinationsPage = () => {
