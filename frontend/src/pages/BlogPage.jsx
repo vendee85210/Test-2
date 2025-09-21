@@ -3,7 +3,7 @@ import { mockBlogPosts } from '../data/mockData';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Calendar, User, ArrowRight, Search } from 'lucide-react';
-import { Input } from '../ui/input';
+import { Input } from '../components/ui/input';
 
 const BlogPage = () => {
   // Extended blog posts for demonstration
