@@ -1,15 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 from models.destination import Destination, DestinationCreate
-from motor.motor_asyncio import AsyncIOMotorClient
-import os
+from database import db
 
 router = APIRouter()
-
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
 
 @router.get("/", response_model=List[Destination])
 async def get_destinations():
