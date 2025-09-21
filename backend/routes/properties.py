@@ -1,21 +1,9 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
 from models.property import Property, PropertyCreate, PropertySearch
-from motor.motor_asyncio import AsyncIOMotorClient
-import os
-from dotenv import load_dotenv
-from pathlib import Path
-
-# Load environment variables
-ROOT_DIR = Path(__file__).parent.parent
-load_dotenv(ROOT_DIR / '.env')
+from database import db
 
 router = APIRouter()
-
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
 
 @router.get("/", response_model=List[Property])
 async def get_properties(
